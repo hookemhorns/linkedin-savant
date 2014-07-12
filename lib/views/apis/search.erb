@@ -3,7 +3,7 @@
 <title>LinkedIn JavaScript API Sample Application</title>
 <!-- Load in the JavaScript framework and register a callback function when it's loaded -->
 <script type="text/javascript" src="http://platform.linkedin.com/in.js">
-api_key: 47eilu8gc3eb
+api_key: w8ygfeocjd7u
 onLoad: onLinkedInLoad
 authorize: true
 </script>
@@ -11,6 +11,7 @@ authorize: true
 <script src="./js/chart.js"></script>
 <canvas id="myChart" width="250" height="250"></canvas>
 <div id="myIndustry"></div>
+<input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
 <div id="profiles"></div>
 <script type="text/javascript">
 
@@ -27,7 +28,7 @@ function onLinkedInAuth2() {
      var div = document.getElementById("peopleSearchForm");
  
      div.innerHTML = '<h2>Find People on LinkedIn</h2>';
-     div.innerHTML += '<form action="javascript:PeopleSearch();">' +
+     div.innerHTML += '<form action="javascript:glob.bucketMiles=1000;PeopleSearch();">' +
                       '<input id="keywords" size="30" value="developer" type="text">' +
                       '<input type="submit" value="Search!" /></form>';
 }
@@ -38,19 +39,6 @@ function displayProfiles(profiles) {
      window.glob.location = member.location;
      window.glob.industry = member.industry;
      document.getElementById("myIndustry").innerHTML = "Your Industry is: "+member.industry
-     /*
-    var xmlHttp = null;
-
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "https://www.linkedin.com/ta/region?query="+glob.location.name, false );
-    xmlHttp.send( null );
-    */
-    //window.glob.postal = xmlHttp.responseText.requestList;
-     document.getElementById("profiles").innerHTML += 
-	     "<p id=\"" + member.id + "\">Hello " +  member.firstName + " " + member.lastName + "</p><img src=\"" + member.pictureUrl + "\"/>";
-window.MyLib = {}; // global Object container
-MyLib.value = 1;
-
 }
 function EncodeQueryData(data)
 {
@@ -65,7 +53,7 @@ function PeopleSearch() {
      // Limit results to 10 and sort by distance
      // On success, call displayPeopleSearch(); On failure, do nothing.
      var keywords = document.getElementById('keywords').value; 
-     IN.API.Raw().url("/people-search:(facets:(code,buckets:(code,name,count)))?facets=industry&"+EncodeQueryData({"title": keywords, "country-code": glob.location.country.code, "postal-code": encodeURIComponent(glob.location.name), "distance": 1000, "count": 10, "sort": "distance"}))
+     IN.API.Raw().url("/people-search:(facets:(code,buckets:(code,name,count)))?facets=industry&"+EncodeQueryData({"title": keywords, "postal-code": encodeURIComponent(glob.location.name), "distance": glob.bucketMiles, "count": 10, "sort": "distance"}))
          .result(displayPeopleBuckets)
          .error(function error(e) { /* do nothing */ }
      );
@@ -76,13 +64,22 @@ function displayPeopleBuckets(peopleSearch) {
 	var colors = ['#FACC00', '#FB9900', '#FB6600', '#FB4800', '#CB0A0A', '#F8F933'];
 	var sorted = []
 	var list = peopleSearch.facets.values[0].buckets.values
+	if (list == undefined) {
+		glob.bucketMiles *= 10;
+		if(glob.bucketMiles > 10000) {
+			alert("I couldnt find someone nearby :(");
+			return;
+		}
+		return PeopleSearch();
+	}
 	list.sort(function(a,b) {
 			a = a.count;
 			b = b.count;
 		return a > b;
 		});
 	var data = [];
-	for (i = 0; i < 5; i++) {
+	minLength = (5 < list.length) ? 5 : list.length;
+	for (i = 0; i < minLength; i++) {
 		data[data.length] = {value: list[i].count, color: colors[i], label: list[i].name + "," + list[i].code}
 	}
 // Get the context of the canvas element we want to select
@@ -91,18 +88,29 @@ var ctx = document.getElementById("myChart").getContext("2d");
 	var myPieChart = new Chart(ctx).Pie(data);
 
 	document.getElementById("myChart").onclick = function(evt) {
+		glob.distanceMiles = 1000;
 		var activePoints = myPieChart.getSegmentsAtEvent(evt);
-		console.log(activePoints);
+		glob.selectedIndustry = activePoints[0].label.split(',')[1];
+		loadResults();
+	}
+}
+
+function loadResults1() {
+	glob.distanceMiles *= 5;
+	loadResults();
+}
+
+function loadResults() {
+
 		var keywords = document.getElementById('keywords').value; 
 		     IN.API.PeopleSearch()
 			 .fields("firstName", "lastName", "distance", "siteStandardProfileRequest", "industry", "location", "id", "positions", "specialties", "public-profile-url")
-			 .params({"title": keywords, "country-code": glob.location.country.code, "postal-code": encodeURIComponent(glob.location.name), "distance": 1000, "count": 10, 
-					 "sort": "distance", "facet": "industry,"+activePoints[0].label.split(',')[1]})
+			 .params({"title": keywords, "postal-code": encodeURIComponent(glob.location.name), "distance": glob.distanceMiles, "count": 10, 
+					 "sort": "distance", "facet": "industry,"+glob.selectedIndustry})
 			 .result(displayPeopleSearch)
 			 .error(function error(e) { /* do nothing */ }
 		     );
 
-	}
 }
 
 function displayPeopleSearch(peopleSearch) {
@@ -113,14 +121,20 @@ function displayPeopleSearch(peopleSearch) {
      // Loop through the people returned
      var members = peopleSearch.people.values;
      for (var member in members) {
- 
+	    xmlHttp = new XMLHttpRequest();
+	    xmlHttp.open( "GET", '/profile?url='+members[member].publicProfileUrl, false );
+	    xmlHttp.send( null );
+	    console.log(xmlHttp.responseText); 
          // Look through result to make name and url.
          var nameText = members[member].firstName + " " + members[member].lastName;
 	 console.log(members[member].siteStandardProfileRequest);
-         var url = "#";
+         var url = members[member].publicProfileUrl;
 	 var distanceText = members[member].distance
          div.innerHTML += "<li><a href=\"" + url + "\">" + nameText + 
          "</a> is " + distanceText + "</li>"
+     }
+     if (members.length < 10) {
+	     document.getElementById('moreResult').hidden = false;
      }
  
      div.innerHTML += "</ul>";
