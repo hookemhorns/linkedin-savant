@@ -5,6 +5,7 @@ module DreamOn
 
     use DreamOn::Controllers::Ping
     use DreamOn::Controllers::Profile
+    use DreamOn::Controllers::Api
   end
 end
 
