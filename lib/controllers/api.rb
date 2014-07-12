@@ -7,6 +7,10 @@ class DreamOn::Controllers::Api < Sinatra::Base
     get '/' do
       erb :index
     end
+    
+    get '/after_login' do
+      erb :after_login
+    end
 
     get '/second' do
       erb :second

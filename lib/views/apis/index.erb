@@ -15,6 +15,15 @@
     <link href="./css/ratchet.css" rel="stylesheet">
 
     <!-- Include the compiled Ratchet JS -->
+    <script src="./js/ratchet.js"></script>
+
+
+    <!-- Load in the JavaScript framework and register a callback function when it's loaded -->
+
+
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+      api_key: 47eilu8gc3eb
+    </script>
   </head>
   <body>
 
@@ -25,56 +34,10 @@
 
     <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
     <div class="content">
-<ul class="table-view">
-  <li class="table-view-cell media">
-    <a class="navigate-right">
-      <img class="media-object pull-left" src="http://placehold.it/42x42">
-      <div class="media-body">
-        Item 1
-        <a class="navigate-right" href="../second" data-transition="slide-in">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-        </a>
+      <div class="text-center linkedin-button">      
+        <script type="IN/Login"  data-size="xlarge"></script>
       </div>
-    </a>
-  </li>
-  <li class="table-view-cell media">
-    <a class="navigate-right">
-      <img class="media-object pull-left" src="http://placehold.it/42x42">
-      <div class="media-body">
-        Item 1
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-      </div>
-    </a>
-  </li>
-  <li class="table-view-cell media">
-    <a class="navigate-right">
-      <img class="media-object pull-left" src="http://placehold.it/42x42">
-      <div class="media-body">
-        Item 1
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-      </div>
-    </a>
-  </li>
-</ul>
-
-
-<header class="bar bar-nav">
-  <h1 class="title">Push</h1>
-</header>
-<div class="content">
-  <div class="card">
-    <ul class="table-view">
-      <li class="table-view-cell">
-        <a class="navigate-right" href="./second" data-transition="slide-in">
-          Load new page with push
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
-
     </div>
 
-    <script src="./js/ratchet.js"></script>
   </body>
 </html>
