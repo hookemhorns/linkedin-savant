@@ -1,5 +1,6 @@
 $: << 'lib'
 require 'config/environment'
+require "sinatra/reloader" if development?
 
 module DreamOn
   Dir[File.join(File.dirname(__FILE__), 'lib', '*.rb')].each do |f|
