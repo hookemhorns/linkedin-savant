@@ -47,9 +47,6 @@ class DreamOn::Controllers::Profile < Sinatra::Base
 
       single_education[:major] = major if major      
       education_hash[:educations] << single_education
-
-      single_education[:start] = element.parent.parent.css('time')[0].content.strip
-      single_education[:end] = element.parent.parent.css('time')[1].content.strip.gsub('-','')
     end
 
     body education_hash.to_json
