@@ -85,7 +85,11 @@ function PeopleSearch() {
 }
  
 function displayPeopleBuckets(peopleSearch) {
-	console.log(peopleSearch);
+if(document.getElementById('tableContents'))
+  document.getElementById('tableContents').hidden = true
+  document.getElementById('myChart').hidden = false
+  document.getElementById('mylist').hidden = false
+	glob.peopleSearch = (peopleSearch);
 	var colors = ['#FACC00', '#FB9900', '#FB6600', '#FB4800', '#CB0A0A', '#F8F933'];
 	var sorted = []
 	var list = peopleSearch.facets.values[0].buckets.values
@@ -116,6 +120,7 @@ function displayPeopleBuckets(peopleSearch) {
 // Get the context of the canvas element we want to select
 var ctx = document.getElementById("myChart").getContext("2d");
 
+
 	var myPieChart = new Chart(ctx).Pie(data);
   document.getElementById('mylist').innerHTML = category_str;
 	document.getElementById("myChart").onclick = function(evt) {
@@ -123,6 +128,9 @@ var ctx = document.getElementById("myChart").getContext("2d");
 		var activePoints = myPieChart.getSegmentsAtEvent(evt);
 		glob.selectedIndustry = activePoints[0].label.split(',')[1];
 		loadResults();
+  
+  document.getElementById('myChart').hidden = true
+  document.getElementById('mylist').hidden = true
 	}
 }
 
@@ -144,6 +152,78 @@ function loadResults() {
 
 }
 
+function rest(i) {
+members = glob.members
+result = glob.result	    
+string = ""
+if (result.major.rest) {
+string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'undergrad\')" data-transition="slide-in">'
+ 
+array = result.school.rest[i][1]; //.concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 2 ? 2 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+          string += '<img class="media-object pull-left" src=' + members[array[k]].pictureUrl + '>'
+				}
+          string += '<div class="media-body"> Diploma Study <p>' + result.major.rest[i][0] + ' in ' + result.school.graduate[i][0] + '</p> </div> </a> </li>' 
+}
+return string
+}
+
+function swipe(slotno, next) {
+if(next == 'graduate')
+  document.getElementById('slot'+slotno).innerHTML = graduate(slotno);
+else if(next == 'rest')
+  document.getElementById('slot'+slotno).innerHTML = rest(slotno);
+else
+  document.getElementById('slot'+slotno).innerHTML = yayy(slotno);
+
+}
+function yayy(i) {
+result = glob.result
+members = glob.members	    
+string = ""
+if (result.major.graduate) {
+string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="" data-transition="slide-in">  Yay... you have reached the end!</a> </li>' 
+}
+return string
+}
+
+function graduate(i) {
+result = glob.result
+members = glob.members	    
+string = ""
+if (result.major.graduate) {
+string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'rest\')" data-transition="slide-in">'
+ 
+array = result.school.graduate[i][1]; //.concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 2 ? 2 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+          string += '<img class="media-object pull-left" src=' + members[array[k]].pictureUrl + '>'
+				}
+          string += '<div class="media-body"> Graduate Study <p>' + result.major.graduate[i][0] + ' in ' + result.school.graduate[i][0] + '</p> </div> </a> </li>' 
+}
+return string
+}
+
+function undergrad(i) {
+result = glob.result	    
+members = glob.members
+string = ""
+if (result.major.undergrad) {
+string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'graduate\')" data-transition="slide-in">'
+ 
+array = result.school.undergrad[i][1]; //.concat(result.major.undergrad[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 2 ? 2 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+          string += '<img class="media-object pull-left" src=' + members[array[k]].pictureUrl + '>'
+				}
+          string += '<div class="media-body"> Undergraduate Study <p>' + result.major.undergrad[i][0] + ' in ' + result.school.undergrad[i][0] + '</p> </div> </a> </li>' 
+}
+return string
+}
 function displayPeopleSearch(peopleSearch) {
      var div = document.getElementById("peopleSearchResults");
  
@@ -151,6 +231,7 @@ function displayPeopleSearch(peopleSearch) {
  
      // Loop through the people returned
      var members = peopleSearch.people.values;
+     glob.members = members;
      urls = ""
 	     i = 0;
      for (var member in members) {
@@ -172,9 +253,22 @@ function displayPeopleSearch(peopleSearch) {
 	    xmlHttp.send( null );
 	    result = JSON.parse((xmlHttp.responseText)); 
 	    window.glob.result = result
-
+string = ''
+string += '<div id="slot0">' + undergrad(0) + '</div>'
+string += '<div id="slot1">' + undergrad(1) + '</div>'
+   document.getElementById('tableContents').innerHTML = string 
+/*
 	    if (result.major.undergrad) {
-		    div.innerHTML += "<b>Undergraduate Study:</b><br/>";
+string += '        <li class="table-view-cell media"> <a class="navigate-right" href="./second" data-transition="slide-in">'
+ array = result.school.undergrad[0][1].concat(result.major.undergrad[0][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 2 ? 2 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+          string += '<img class="media-object pull-left" src=' + members[array[k]].pictureUrl + '>'
+				}
+          string += '<div class="media-body"> Undergraduate Study <p>' + result.major.undergrad[0][0] + ' in ' + result.school.undergrad[0][0] + '</p> </div> </a> </li>' 
+   document.getElementById('tableContents').innerHTML = string 
+
 		    var i = 0;
 		for(var j = 0 ; j < result.major.undergrad.length; j++) {
 			item = result.major.undergrad[j];
@@ -191,26 +285,17 @@ function displayPeopleSearch(peopleSearch) {
 		}
 	    }
 
-	    if (result.major.graduate) {
-		    div.innerHTML += "<b>Graduate Study:</b><br/>";
-		    var i = 0;
-		for(var j = 0 ; j < result.major.graduate.length; j++) {
-			item = result.major.graduate[j];
-			div.innerHTML += "<span>"+item[0]+" -- " + result.school.graduate[i][0] + "</span>"
-			array = result.school.graduate[i][1].concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
-			max_length = array.length > 5 ? 5 : array.length;
+	    if (result.major.rest) {
+string += '        <li class="table-view-cell media"> <a class="navigate-right" href="./second" data-transition="slide-in">'
+ array = result.school.rest[0][1].concat(result.major.rest[0][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 2 ? 2 : array.length;
 				for(var k = 0 ; k < max_length; k++) {
 					if(members[array[k]].pictureUrl)
-						div.innerHTML += "<img class='red' alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+          string += '<img class="media-object pull-left" src=' + members[array[k]].pictureUrl + '>'
 				}
-			div.innerHTML += "<br/>"
-				i++;
-				
-		}
-	    }
+          string += '<div class="media-body"> Diploma Study <p>' + result.major.rest[0][0] + ' in ' + result.school.rest[0][0] + '</p> </div> </a> </li>' 
+   document.getElementById('tableContents').innerHTML = string 
 
-	    if (result.major.rest) {
-		    div.innerHTML += "<b>Diploma Study:</b><br/>";
 		    var i = 0;
 		for(var j = 0 ; j < result.major.rest.length; j++) {
 			item = result.major.rest[j];
@@ -226,6 +311,7 @@ function displayPeopleSearch(peopleSearch) {
 				
 		}
 	    }
+*/
      if (members.length < 10) {
 	     document.getElementById('moreResult').hidden = false;
      }
@@ -238,7 +324,7 @@ function displayPeopleSearch(peopleSearch) {
 
   <!-- Make sure all your bars are the first things in your <body> -->
     <header class="bar bar-nav">
-      <a href="./after_login" data-transition="slide-out"><button class="btn btn-link btn-nav pull-left">
+      <a onclick="displayPeopleBuckets(glob.peopleSearch)" data-transition="slide-out"><button class="btn btn-link btn-nav pull-left">
 <span class="icon icon-left-nav"></span>
     Left
   </button></a>
@@ -254,6 +340,8 @@ function displayPeopleSearch(peopleSearch) {
 <div id="profiles"></div>
 
 <div id="mylist"></div>
+
+<ul class="table-view" id = "tableContents"></ul>
 
 <script type="IN/Login"></script>
 <div id="peopleSearchForm"></div>

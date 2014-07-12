@@ -21,5 +21,9 @@ class DreamOn::Controllers::Api < Sinatra::Base
     get '/search' do
       erb :search
     end
+
+    get '/search_results' do
+      erb :search_results
+    end
 end
 
