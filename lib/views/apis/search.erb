@@ -20,7 +20,7 @@
 
 
     <script type="text/javascript" src="http://platform.linkedin.com/in.js">
-      api_key: w8ygfeocjd7u
+      api_key: 75snkyy0ri7ru6
       onLoad: onLinkedInLoad
       authorize: true
     </script>
@@ -96,8 +96,8 @@ function PeopleSearch() {
 }
  
 function displayPeopleBuckets(peopleSearch) {
-if(document.getElementById('tableContents'))
-  document.getElementById('tableContents').hidden = true
+//if(document.getElementById('tableContents'))
+//  document.getElementById('tableContents').hidden = true
   document.getElementById('myChart').hidden = false
   document.getElementById('mylist').hidden = false
 	glob.peopleSearch = (peopleSearch);
@@ -166,7 +166,7 @@ function rest(i) {
 members = glob.members
 result = glob.result	    
 string = ""
-if (result.major.rest) {
+if (result.major.rest.length > 0) {
 string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'undergrad\')" data-transition="slide-in">'
  
 array = result.school.rest[i][1]; //.concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
@@ -203,7 +203,7 @@ function graduate(i) {
 result = glob.result
 members = glob.members	    
 string = ""
-if (result.major.graduate) {
+if (result.major.graduate.length > 0) {
 string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'rest\')" data-transition="slide-in">'
  
 array = result.school.graduate[i][1]; //.concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
@@ -221,7 +221,7 @@ function undergrad(i) {
 result = glob.result	    
 members = glob.members
 string = ""
-if (result.major.undergrad) {
+if (result.major.undergrad.length > 0) {
 string += '        <li class="table-view-cell media"> <a class="navigate-right" onclick="swipe('+i+', \'graduate\')" data-transition="slide-in">'
  
 array = result.school.undergrad[i][1]; //.concat(result.major.undergrad[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
