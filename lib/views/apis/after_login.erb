@@ -10,12 +10,25 @@
     <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+<script src="./js/jquery.autocomplete.min.js"></script>
+
 
     <!-- Include the compiled Ratchet CSS -->
     <link href="./css/ratchet.css" rel="stylesheet">
 
     <!-- Include the compiled Ratchet JS -->
     <script src="./js/ratchet.js"></script>
+
+
+    <!-- Load in the JavaScript framework and register a callback function when it's loaded -->
+
+
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+      api_key: 47eilu8gc3eb
+    </script>
+    <script type="text/javascript" src="./js/complete.ly.1.0.1">
+</script>
   </head>
   <body>
 
@@ -26,39 +39,39 @@
 
     <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
     <div class="content">
+      <!-- <div class="text-center linkedin-button">      
+        <script type="IN/Login"  data-size="xlarge"></script>
+      </div> -->
+      <div id="remote">
 
-      <ul class="table-view">
-        <li class="table-view-cell media">
-        <a class="navigate-right" href="./second">
-          <img class="media-object pull-left" src="http://placehold.it/42x42">
-          <div class="media-body">
-            Item 1
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-          </div>
-        </a>
-        </li>
-        <li class="table-view-cell media">
-        <a class="navigate-right">
-          <img class="media-object pull-left" src="http://placehold.it/42x42">
-          <div class="media-body">
-            Item 1
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-          </div>
-        </a>
-        </li>
-        <li class="table-view-cell media">
-        <a class="navigate-right">
-          <img class="media-object pull-left" src="http://placehold.it/42x42">
-          <div class="media-body">
-            Item 1
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
-          </div>
-        </a>
-        </li>
-      </ul>
+<form>
+<input type="text" name="dream" id="autocomplete" placeholder="What do you want to be..."/>
+  <button class="btn btn-positive btn-block">See How!</button>
+</form>
+
+      <script>
+      var countries = [
+         { value: 'Software Developer', data: 'Software Developer' },
+         // ...
+         { value: 'Software Engineer', data: 'Software Engineer' },
+         { value: 'Software Consultant', data: 'Software Consultant' },
+         { value: 'Senior Software Engineer', data: 'Senior Software Engineer' },
+         { value: 'Software Engineer', data: 'Software Engineer' },
+         { value: 'Principal Software Engineer', data: 'Principal Software Engineer' },
+         { value: 'Software Test Engineer', data: 'Software Test Engineer' }
+      ];
+
+      $(document).ready(function () {
+          $('#autocomplete').autocomplete({
+            lookup: countries,
+            onSelect: function (suggestion) {
+          }
+        }); 
+      });
+      </script>
+      </div>
 
     </div>
 
   </body>
 </html>
-
