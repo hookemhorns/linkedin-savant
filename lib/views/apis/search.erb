@@ -1,5 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<style>
+.red {height: "50%"; width: "50%"}
+</style>
 <title>LinkedIn JavaScript API Sample Application</title>
 <!-- Load in the JavaScript framework and register a callback function when it's loaded -->
 <script type="text/javascript" src="http://platform.linkedin.com/in.js">
@@ -25,20 +28,26 @@ function onLinkedInAuth2() {
      IN.API.Profile("me")
 	     .fields("location", "firstName", "lastName", "pictureUrl", "industry")
 	     .result(displayProfiles);
+	     /*
      var div = document.getElementById("peopleSearchForm");
  
      div.innerHTML = '<h2>Find People on LinkedIn</h2>';
      div.innerHTML += '<form action="javascript:glob.bucketMiles=1000;PeopleSearch();">' +
                       '<input id="keywords" size="30" value="developer" type="text">' +
                       '<input type="submit" value="Search!" /></form>';
+		      */
 }
  
 function displayProfiles(profiles) {
      member = profiles.values[0];
      window.glob = {}
+     window.glob.keywords = location.search.split('dream=')[1];
      window.glob.location = member.location;
      window.glob.industry = member.industry;
-     document.getElementById("myIndustry").innerHTML = "Your Industry is: "+member.industry
+
+     glob.bucketMiles=1000;
+     PeopleSearch();
+     //document.getElementById("myIndustry").innerHTML = "Your Industry is: "+member.industry
 }
 function EncodeQueryData(data)
 {
@@ -52,7 +61,7 @@ function PeopleSearch() {
      // Ask for 4 fields to be returned: first name, last name, distance, and Profile URL
      // Limit results to 10 and sort by distance
      // On success, call displayPeopleSearch(); On failure, do nothing.
-     var keywords = document.getElementById('keywords').value; 
+     var keywords = glob.keywords; // document.getElementById('keywords').value; 
      IN.API.Raw().url("/people-search:(facets:(code,buckets:(code,name,count)))?facets=industry&"+EncodeQueryData({"title": keywords, "postal-code": encodeURIComponent(glob.location.name), "distance": glob.bucketMiles, "count": 10, "sort": "distance"}))
          .result(displayPeopleBuckets)
          .error(function error(e) { /* do nothing */ }
@@ -102,7 +111,7 @@ function loadResults1() {
 
 function loadResults() {
 
-		var keywords = document.getElementById('keywords').value; 
+		var keywords = glob.keywords; // document.getElementById('keywords').value; 
 		     IN.API.PeopleSearch()
 			 .fields("firstName", "lastName", "distance", "siteStandardProfileRequest", "industry", "location", "id", "positions", "specialties", "public-profile-url", "picture-url")
 			 .params({"title": keywords, "postal-code": encodeURIComponent(glob.location.name), "distance": glob.distanceMiles, "count": 10, 
@@ -152,7 +161,7 @@ function displayPeopleSearch(peopleSearch) {
 			max_length = array.length > 5 ? 5 : array.length;
 				for(var k = 0 ; k < max_length; k++) {
 					if(members[array[k]].pictureUrl)
-						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+						div.innerHTML += "<img class='red' alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
 				}
 			div.innerHTML += "<br/>"
 				i++;
@@ -170,7 +179,7 @@ function displayPeopleSearch(peopleSearch) {
 			max_length = array.length > 5 ? 5 : array.length;
 				for(var k = 0 ; k < max_length; k++) {
 					if(members[array[k]].pictureUrl)
-						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+						div.innerHTML += "<img class='red' alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
 				}
 			div.innerHTML += "<br/>"
 				i++;
@@ -188,7 +197,7 @@ function displayPeopleSearch(peopleSearch) {
 			max_length = array.length > 5 ? 5 : array.length;
 				for(var k = 0 ; k < max_length; k++) {
 					if(members[array[k]].pictureUrl)
-						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+						div.innerHTML += "<img class='red' alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
 				}
 			div.innerHTML += "<br/>"
 				i++;
@@ -206,6 +215,6 @@ function displayPeopleSearch(peopleSearch) {
 <body>
 <script type="IN/Login"></script>
 <div id="peopleSearchForm"></div>
-<div id="peopleSearchResults"></div>
+<div id="peopleSearchResults" style="font-size: 6px"></div>
 </body>
 </html

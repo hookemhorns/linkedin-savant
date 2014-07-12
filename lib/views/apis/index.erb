@@ -33,9 +33,22 @@
 
 
     <script type="text/javascript" src="http://platform.linkedin.com/in.js">
-      api_key: 47eilu8gc3eb
+	api_key: w8ygfeocjd7u
+	onLoad: onLinkedInLoad
+	authorize: false
     </script>
 </script>
+<script type="text/javascript">
+
+function onLinkedInLoad() {
+     // Listen for an auth event to occur
+     IN.Event.on(IN, "auth", onLinkedInAuth2);
+}
+
+function onLinkedInAuth2() {
+     window.location.href = '/after_login';
+}
+</script> 
   </head>
   <body>
 
