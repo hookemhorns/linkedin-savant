@@ -1,21 +1,37 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<style>
-.red {height: "50%"; width: "50%"}
-</style>
-<title>LinkedIn JavaScript API Sample Application</title>
-<!-- Load in the JavaScript framework and register a callback function when it's loaded -->
-<script type="text/javascript" src="http://platform.linkedin.com/in.js">
-api_key: w8ygfeocjd7u
-onLoad: onLinkedInLoad
-authorize: true
-</script>
- 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dream On | You can be what you want to be.</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+ <!-- Include the compiled Ratchet CSS -->
+    <link href="./css/ratchet.css" rel="stylesheet">
+  
+    <!-- Include the compiled Ratchet JS -->
+    <script src="./js/ratchet.js"></script>
+
+
+
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+      api_key: w8ygfeocjd7u
+      onLoad: onLinkedInLoad
+      authorize: true
+    </script>
+    <style>
+canvas{
+margin-top: 18%;
+margin-left: 16%;
+}
+</style> 
 <script src="./js/chart.js"></script>
-<canvas id="myChart" width="250" height="250"></canvas>
-<div id="myIndustry"></div>
-<input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
-<div id="profiles"></div>
+
 <script type="text/javascript">
 
 function onLinkedInLoad() {
@@ -213,8 +229,27 @@ function displayPeopleSearch(peopleSearch) {
 </script>
 </head>
 <body>
+
+  <!-- Make sure all your bars are the first things in your <body> -->
+    <header class="bar bar-nav">
+      <a href="./after_login" data-transition="slide-out"><button class="btn btn-link btn-nav pull-left">
+<span class="icon icon-left-nav"></span>
+    Left
+  </button></a>
+<a class="icon icon-search pull-right" href="./after_login" data-transition="slide-out"></a>
+      <h1 class="title">Dream On!</h1>
+    </header>
+
+    <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
+    <div class="content">
+<canvas id="myChart" width="250" height="250"></canvas>
+<div id="myIndustry"></div>
+<input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
+<div id="profiles"></div>
+
 <script type="IN/Login"></script>
 <div id="peopleSearchForm"></div>
 <div id="peopleSearchResults" style="font-size: 6px"></div>
+</div>
 </body>
 </html
