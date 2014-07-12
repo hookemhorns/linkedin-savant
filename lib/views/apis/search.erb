@@ -82,9 +82,11 @@ function PeopleSearch() {
          .result(displayPeopleBuckets)
          .error(function error(e) { /* do nothing */ }
      );
+     document.getElementById('info_stuff').innerHTML = "Locating for " + keywords + "s around " + glob.location.name + " ..."
 }
  
 function displayPeopleBuckets(peopleSearch) {
+	document.getElementById('info_stuff').hidden = true
 //if(document.getElementById('tableContents'))
 //  document.getElementById('tableContents').hidden = true
   document.getElementById('myChart').hidden = false
@@ -140,6 +142,7 @@ function loadResults1() {
 }
 
 function loadResults() {
+	document.getElementById('info_stuff').hidden = false
 
 		var keywords = glob.keywords; // document.getElementById('keywords').value; 
 		     IN.API.PeopleSearch()
@@ -225,6 +228,8 @@ array = result.school.undergrad[i][1]; //.concat(result.major.undergrad[i][1]).s
 return string
 }
 function displayPeopleSearch(peopleSearch) {
+	document.getElementById('info_stuff').hidden = true
+
      var div = document.getElementById("peopleSearchResults");
  
      div.innerHTML = "<ul>";
@@ -324,7 +329,7 @@ string += '        <li class="table-view-cell media"> <a class="navigate-right" 
 
   <!-- Make sure all your bars are the first things in your <body> -->
     <header class="bar bar-nav">
-      <a onclick="displayPeopleBuckets(glob.peopleSearch)" data-transition="slide-out"><button class="btn btn-link btn-nav pull-left">
+      <a href="./after_login" data-transition="slide-out"><button class="btn btn-link btn-nav pull-left">
 <span class="icon icon-left-nav"></span>
     Left
   </button></a>
@@ -344,6 +349,7 @@ string += '        <li class="table-view-cell media"> <a class="navigate-right" 
 <ul class="table-view" id = "tableContents"></ul>
 
 <script type="IN/Login"></script>
+<div id="info_stuff"></div>
 <div id="peopleSearchForm"></div>
 <div id="peopleSearchResults" style="font-size: 6px"></div>
 </div>
