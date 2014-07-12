@@ -4,15 +4,21 @@ require 'open-uri'
 
 class DreamOn::Controllers::Profile < Sinatra::Base
 
-  def not_found msg
-    return msg
+  def not_found msg="resource not found"
+    return 404, msg
   end
 
   get '/profile/:id' do
     content_type :json
 
-    not_found unless params[:id]
-    doc = Nokogiri::HTML(open("https://www.linkedin.com/in/#{params[:id]}"))
+    return not_found unless params[:id]
+    begin
+      open_decriptor = open("https://www.linkedin.com/in/#{params[:id]}")
+    rescue OpenURI::HTTPError
+      return not_found("User not found: #{params[:id]}")
+    end
+
+    doc = Nokogiri::HTML(open_decriptor)
     education_hash = {}
 
     education_hash[:educations] = []
