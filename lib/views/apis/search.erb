@@ -104,9 +104,9 @@ function loadResults() {
 
 		var keywords = document.getElementById('keywords').value; 
 		     IN.API.PeopleSearch()
-			 .fields("firstName", "lastName", "distance", "siteStandardProfileRequest", "industry", "location", "id", "positions", "specialties", "public-profile-url")
+			 .fields("firstName", "lastName", "distance", "siteStandardProfileRequest", "industry", "location", "id", "positions", "specialties", "public-profile-url", "picture-url")
 			 .params({"title": keywords, "postal-code": encodeURIComponent(glob.location.name), "distance": glob.distanceMiles, "count": 10, 
-					 "sort": "distance", "facet": "industry,"+glob.selectedIndustry})
+					 "sort": "connections", "facet": "industry,"+glob.selectedIndustry})
 			 .result(displayPeopleSearch)
 			 .error(function error(e) { /* do nothing */ }
 		     );
@@ -120,19 +120,81 @@ function displayPeopleSearch(peopleSearch) {
  
      // Loop through the people returned
      var members = peopleSearch.people.values;
+     urls = ""
+	     i = 0;
      for (var member in members) {
-	    xmlHttp = new XMLHttpRequest();
-	    xmlHttp.open( "GET", '/profile?url='+members[member].publicProfileUrl, false );
-	    xmlHttp.send( null );
-	    console.log(xmlHttp.responseText); 
          // Look through result to make name and url.
+	     if (members[member].publicProfileUrl)
+		     urls += (members[member].publicProfileUrl+"--"+i+",,");
+	     /*
          var nameText = members[member].firstName + " " + members[member].lastName;
 	 console.log(members[member].siteStandardProfileRequest);
          var url = members[member].publicProfileUrl;
 	 var distanceText = members[member].distance
          div.innerHTML += "<li><a href=\"" + url + "\">" + nameText + 
          "</a> is " + distanceText + "</li>"
+	 */
+	 i++;
      }
+	    xmlHttp = new XMLHttpRequest();
+	    xmlHttp.open( "GET", '/profile?url='+urls, false );
+	    xmlHttp.send( null );
+	    result = JSON.parse((xmlHttp.responseText)); 
+	    window.glob.result = result
+
+	    if (result.major.undergrad) {
+		    div.innerHTML += "<b>Undergraduate Study:</b><br/>";
+		    var i = 0;
+		for(var j = 0 ; j < result.major.undergrad.length; j++) {
+			item = result.major.undergrad[j];
+			div.innerHTML += "<span>"+item[0]+" -- " + result.school.undergrad[i][0] + "</span>"
+			array = result.school.undergrad[i][1].concat(result.major.undergrad[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 5 ? 5 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+				}
+			div.innerHTML += "<br/>"
+				i++;
+				
+		}
+	    }
+
+	    if (result.major.graduate) {
+		    div.innerHTML += "<b>Graduate Study:</b><br/>";
+		    var i = 0;
+		for(var j = 0 ; j < result.major.graduate.length; j++) {
+			item = result.major.graduate[j];
+			div.innerHTML += "<span>"+item[0]+" -- " + result.school.graduate[i][0] + "</span>"
+			array = result.school.graduate[i][1].concat(result.major.graduate[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 5 ? 5 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+				}
+			div.innerHTML += "<br/>"
+				i++;
+				
+		}
+	    }
+
+	    if (result.major.rest) {
+		    div.innerHTML += "<b>Diploma Study:</b><br/>";
+		    var i = 0;
+		for(var j = 0 ; j < result.major.rest.length; j++) {
+			item = result.major.rest[j];
+			div.innerHTML += "<span>"+item[0]+" -- " + result.school.rest[i][0] + "</span>"
+			array = result.school.rest[i][1].concat(result.major.rest[i][1]).sort().reduce(function(a,b){ if (a.indexOf(b) < 0 ) a.push(b); return a; },[]);
+			max_length = array.length > 5 ? 5 : array.length;
+				for(var k = 0 ; k < max_length; k++) {
+					if(members[array[k]].pictureUrl)
+						div.innerHTML += "<img alt='distance: "+members[array[k]].distance+"' src='"+members[array[k]].pictureUrl+"'/>"
+				}
+			div.innerHTML += "<br/>"
+				i++;
+				
+		}
+	    }
      if (members.length < 10) {
 	     document.getElementById('moreResult').hidden = false;
      }
@@ -146,4 +208,4 @@ function displayPeopleSearch(peopleSearch) {
 <div id="peopleSearchForm"></div>
 <div id="peopleSearchResults"></div>
 </body>
-</html>
+</html
