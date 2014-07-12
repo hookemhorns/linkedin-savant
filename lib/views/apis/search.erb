@@ -29,9 +29,20 @@ canvas{
 margin-top: 18%;
 margin-left: 16%;
 }
+
+#loader {
+	max-width: 100%;
+	width: 25%;
+	margin-left: 38%;
+	margin-top: 50%;
+	}
 </style> 
 <script src="./js/chart.js"></script>
-
+<canvas id="myChart" width="300" height="300"></canvas>
+<div id="legend"></div>
+<div id="myIndustry"></div>
+<input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
+<div id="profiles"></div>
 <script type="text/javascript">
 
 function onLinkedInLoad() {
@@ -108,7 +119,6 @@ if(document.getElementById('tableContents'))
 		});
 	var data = [];
 	minLength = (5 < list.length) ? 5 : list.length;
-
   category_str = "We found these categories :<br/>";
 
 	for (i = 0; i < minLength; i++) {
@@ -257,6 +267,7 @@ string = ''
 string += '<div id="slot0">' + undergrad(0) + '</div>'
 string += '<div id="slot1">' + undergrad(1) + '</div>'
    document.getElementById('tableContents').innerHTML = string 
+	    document.getElementById("loader").style.display = 'none';
 /*
 	    if (result.major.undergrad) {
 string += '        <li class="table-view-cell media"> <a class="navigate-right" href="./second" data-transition="slide-in">'
@@ -334,6 +345,8 @@ string += '        <li class="table-view-cell media"> <a class="navigate-right" 
 
     <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
     <div class="content">
+
+	    <img src="./images/loading.gif" id="loader"/>
 <canvas id="myChart" width="250" height="250"></canvas>
 <div id="myIndustry"></div>
 <input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
