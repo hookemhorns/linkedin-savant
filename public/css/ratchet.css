@@ -244,7 +244,8 @@ body {
   font-size: 17px;
   line-height: 21px;
   color: #000;
-  background-color: #fff;
+  background-color: #000;
+  background-image: url('../images/background.png')
 }
 
 a {
@@ -265,7 +266,8 @@ a:active {
   left: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  background-color: #fff;
+  background-color: #000;
+  background: url('../images/b5.jpg')
 }
 
 .content > * {

@@ -10,8 +10,8 @@
     <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
-<script src="./js/jquery.autocomplete.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+    <script src="./js/jquery.autocomplete.min.js"></script>
 
 
     <!-- Include the compiled Ratchet CSS -->
@@ -27,8 +27,6 @@
     <script type="text/javascript" src="http://platform.linkedin.com/in.js">
       api_key: 47eilu8gc3eb
     </script>
-    <script type="text/javascript" src="./js/complete.ly.1.0.1">
-</script>
   </head>
   <body>
 
@@ -39,6 +37,11 @@
 
     <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
     <div class="content">
+<style>
+form {
+  margin-top:35%;
+}
+</style>
       <!-- <div class="text-center linkedin-button">      
         <script type="IN/Login"  data-size="xlarge"></script>
       </div> -->
@@ -48,7 +51,6 @@
 <input type="text" name="dream" id="autocomplete" placeholder="What do you want to be..."/>
   <button class="btn btn-positive btn-block">See How!</button>
 </form>
-
       <script>
       var countries = [
          { value: 'Software Developer', data: 'Software Developer' },
