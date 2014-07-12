@@ -1,5 +1,5 @@
 class DreamOn::Controllers::Api < Sinatra::Base
-
+  require 'json'
   #set view directory as /views/apis for this controller views
   set :views,  File.join(root, '../views/apis' )
 

@@ -9,6 +9,7 @@ gem 'activesupport' , '~> 3.2.8'
 gem 'rack-contrib'
 gem 'nokogiri'
 gem 'pry'
+gem 'faraday'
 
 group :test do
   gem 'rspec'
