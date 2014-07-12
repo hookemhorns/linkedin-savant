@@ -12,7 +12,8 @@ authorize: true
 </script>
  
 <script src="./js/chart.js"></script>
-<canvas id="myChart" width="250" height="250"></canvas>
+<canvas id="myChart" width="300" height="300"></canvas>
+<div id="legend"></div>
 <div id="myIndustry"></div>
 <input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
 <div id="profiles"></div>
@@ -88,9 +89,12 @@ function displayPeopleBuckets(peopleSearch) {
 		});
 	var data = [];
 	minLength = (5 < list.length) ? 5 : list.length;
+	category_str = "We found these categories :<br/>";
 	for (i = 0; i < minLength; i++) {
 		data[data.length] = {value: list[i].count, color: colors[i], label: list[i].name + "," + list[i].code}
+		category_str += "<span style='color:"+colors[i]+"' <b>"+list[i].name+" : </b>" + list[i].counts +" results'/><br/>";
 	}
+	div.getElementById('div').innerHTML = category_str;
 // Get the context of the canvas element we want to select
 var ctx = document.getElementById("myChart").getContext("2d");
 
