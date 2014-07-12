@@ -1,0 +1,135 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>LinkedIn JavaScript API Sample Application</title>
+<!-- Load in the JavaScript framework and register a callback function when it's loaded -->
+<script type="text/javascript" src="http://platform.linkedin.com/in.js">
+api_key: 47eilu8gc3eb
+onLoad: onLinkedInLoad
+authorize: true
+</script>
+ 
+<script src="./js/chart.js"></script>
+<canvas id="myChart" width="250" height="250"></canvas>
+<div id="myIndustry"></div>
+<div id="profiles"></div>
+<script type="text/javascript">
+
+function onLinkedInLoad() {
+     // Listen for an auth event to occur
+     IN.Event.on(IN, "auth", onLinkedInAuth2);
+}
+ 
+function onLinkedInAuth2() {
+     // After they've signed-in, print a form to enable keyword searching
+     IN.API.Profile("me")
+	     .fields("location", "firstName", "lastName", "pictureUrl", "industry")
+	     .result(displayProfiles);
+     var div = document.getElementById("peopleSearchForm");
+ 
+     div.innerHTML = '<h2>Find People on LinkedIn</h2>';
+     div.innerHTML += '<form action="javascript:PeopleSearch();">' +
+                      '<input id="keywords" size="30" value="developer" type="text">' +
+                      '<input type="submit" value="Search!" /></form>';
+}
+ 
+function displayProfiles(profiles) {
+     member = profiles.values[0];
+     window.glob = {}
+     window.glob.location = member.location;
+     window.glob.industry = member.industry;
+     document.getElementById("myIndustry").innerHTML = "Your Industry is: "+member.industry
+     /*
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", "https://www.linkedin.com/ta/region?query="+glob.location.name, false );
+    xmlHttp.send( null );
+    */
+    //window.glob.postal = xmlHttp.responseText.requestList;
+     document.getElementById("profiles").innerHTML += 
+	     "<p id=\"" + member.id + "\">Hello " +  member.firstName + " " + member.lastName + "</p><img src=\"" + member.pictureUrl + "\"/>";
+window.MyLib = {}; // global Object container
+MyLib.value = 1;
+
+}
+function EncodeQueryData(data)
+{
+	   var ret = [];
+	      for (var d in data)
+		            ret.push(encodeURIComponent(d) + "=" + encodeURIComponent(data[d]));
+	         return ret.join("&");
+}
+function PeopleSearch() {
+     // Call the PeopleSearch API with the viewer's keywords
+     // Ask for 4 fields to be returned: first name, last name, distance, and Profile URL
+     // Limit results to 10 and sort by distance
+     // On success, call displayPeopleSearch(); On failure, do nothing.
+     var keywords = document.getElementById('keywords').value; 
+     IN.API.Raw().url("/people-search:(facets:(code,buckets:(code,name,count)))?facets=industry&"+EncodeQueryData({"title": keywords, "country-code": glob.location.country.code, "postal-code": encodeURIComponent(glob.location.name), "distance": 1000, "count": 10, "sort": "distance"}))
+         .result(displayPeopleBuckets)
+         .error(function error(e) { /* do nothing */ }
+     );
+}
+ 
+function displayPeopleBuckets(peopleSearch) {
+	console.log(peopleSearch);
+	var colors = ['#FACC00', '#FB9900', '#FB6600', '#FB4800', '#CB0A0A', '#F8F933'];
+	var sorted = []
+	var list = peopleSearch.facets.values[0].buckets.values
+	list.sort(function(a,b) {
+			a = a.count;
+			b = b.count;
+		return a > b;
+		});
+	var data = [];
+	for (i = 0; i < 5; i++) {
+		data[data.length] = {value: list[i].count, color: colors[i], label: list[i].name + "," + list[i].code}
+	}
+// Get the context of the canvas element we want to select
+var ctx = document.getElementById("myChart").getContext("2d");
+
+	var myPieChart = new Chart(ctx).Pie(data);
+
+	document.getElementById("myChart").onclick = function(evt) {
+		var activePoints = myPieChart.getSegmentsAtEvent(evt);
+		console.log(activePoints);
+		var keywords = document.getElementById('keywords').value; 
+		     IN.API.PeopleSearch()
+			 .fields("firstName", "lastName", "distance", "siteStandardProfileRequest", "industry", "location", "id", "positions", "specialties", "public-profile-url")
+			 .params({"title": keywords, "country-code": glob.location.country.code, "postal-code": encodeURIComponent(glob.location.name), "distance": 1000, "count": 10, 
+					 "sort": "distance", "facet": "industry,"+activePoints[0].label.split(',')[1]})
+			 .result(displayPeopleSearch)
+			 .error(function error(e) { /* do nothing */ }
+		     );
+
+	}
+}
+
+function displayPeopleSearch(peopleSearch) {
+     var div = document.getElementById("peopleSearchResults");
+ 
+     div.innerHTML = "<ul>";
+ 
+     // Loop through the people returned
+     var members = peopleSearch.people.values;
+     for (var member in members) {
+ 
+         // Look through result to make name and url.
+         var nameText = members[member].firstName + " " + members[member].lastName;
+	 console.log(members[member].siteStandardProfileRequest);
+         var url = "#";
+	 var distanceText = members[member].distance
+         div.innerHTML += "<li><a href=\"" + url + "\">" + nameText + 
+         "</a> is " + distanceText + "</li>"
+     }
+ 
+     div.innerHTML += "</ul>";
+}
+</script>
+</head>
+<body>
+<script type="IN/Login"></script>
+<div id="peopleSearchForm"></div>
+<div id="peopleSearchResults"></div>
+</body>
+</html>

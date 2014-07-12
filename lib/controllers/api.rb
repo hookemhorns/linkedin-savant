@@ -11,5 +11,8 @@ class DreamOn::Controllers::Api < Sinatra::Base
     get '/second' do
       erb :second
     end
+    get '/search' do
+      erb :search
+    end
 end
 
