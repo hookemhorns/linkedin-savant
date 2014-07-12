@@ -8,12 +8,20 @@ class DreamOn::Controllers::Profile < Sinatra::Base
     return 404, msg
   end
 
-  get '/profile/:id' do
+  get '/profile' do
     content_type :json
 
-    return not_found unless params[:id]
+    return not_found unless params[:id] || params[:url]
+
     begin
-      open_decriptor = open("https://www.linkedin.com/in/#{params[:id]}")
+      if params[:id]
+        open_decriptor = open("https://www.linkedin.com/in/#{params[:id]}")
+      elsif params[:url]
+        params[:url].gsub!('http', 'https') if params[:url].scan('https').empty?
+        open_decriptor = open("#{params[:url].strip}")
+      end
+    rescue RuntimeError
+      return not_found("dude! use https url.")
     rescue OpenURI::HTTPError
       return not_found("User not found: #{params[:id]}")
     end
@@ -39,6 +47,9 @@ class DreamOn::Controllers::Profile < Sinatra::Base
 
       single_education[:major] = major if major      
       education_hash[:educations] << single_education
+
+      single_education[:start] = element.parent.parent.css('time')[0].content.strip
+      single_education[:end] = element.parent.parent.css('time')[1].content.strip.gsub('-','')
     end
 
     body education_hash.to_json
