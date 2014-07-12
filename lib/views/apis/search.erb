@@ -104,14 +104,20 @@ function displayPeopleBuckets(peopleSearch) {
 		});
 	var data = [];
 	minLength = (5 < list.length) ? 5 : list.length;
+
+  category_str = "We found these categories :<br/>";
+
 	for (i = 0; i < minLength; i++) {
 		data[data.length] = {value: list[i].count, color: colors[i], label: list[i].name + "," + list[i].code}
+
+    category_str += "<span style='color:"+colors[i]+"'> <b>"+list[i].name+" : </b>" + list[i].count +" results </span><br/>";
 	}
+
 // Get the context of the canvas element we want to select
 var ctx = document.getElementById("myChart").getContext("2d");
 
 	var myPieChart = new Chart(ctx).Pie(data);
-
+  document.getElementById('mylist').innerHTML = category_str;
 	document.getElementById("myChart").onclick = function(evt) {
 		glob.distanceMiles = 1000;
 		var activePoints = myPieChart.getSegmentsAtEvent(evt);
@@ -246,6 +252,8 @@ function displayPeopleSearch(peopleSearch) {
 <div id="myIndustry"></div>
 <input type="submit" onclick="loadResults1()" id="moreResult" hidden=true value="Load More!" />
 <div id="profiles"></div>
+
+<div id="mylist"></div>
 
 <script type="IN/Login"></script>
 <div id="peopleSearchForm"></div>
